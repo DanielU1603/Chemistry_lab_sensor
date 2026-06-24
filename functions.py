@@ -9,7 +9,7 @@ def load_csv(file):
     return df
 
 
-def data_validation(df):
+def data_validation(dataframe):
    columns_found = set([column_name.lower() for column_name in df.columns])
    expected_columns = {"pressure", "temperature", "co2", "time"}
    missing_columns = expected_columns - columns_found
@@ -17,4 +17,4 @@ def data_validation(df):
    if len(missing_columns) > 0:  
        error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
        return error
-    return df
+    return dataframe
