@@ -34,3 +34,7 @@ error = {"error_type": "missing_value", "column": "", "row": ""}
 #data_type
 
 error = {"error_type":"invalid_type"; "column": "", "row": "", "input_type":"", "expected_type":""}
+
+def integrity_check(): 
+
+    integrity_report = {"integrity_check": "hash_modified", "original_hash": "", "current_hash": ""}
