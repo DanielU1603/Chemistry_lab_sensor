@@ -18,3 +18,19 @@ def data_validation(dataframe):
        error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
        return error
     return dataframe
+
+for k in df:
+   for v in df[k]:
+       if v == "": 
+           error = {"error_type":"missing_value"; "column":k; "row": v.index()}
+           return error
+
+#missing_value
+#data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
+#this fits with the structure of error.
+
+error = {"error_type": "missing_value", "column": "", "row": ""}  
+
+#data_type
+
+error = {"error_type":"invalid_type"; "column": "", "row": "", "input_type":"", "expected_type":""}
