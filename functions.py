@@ -19,13 +19,22 @@ def data_validation(dataframe):
        return error
     return dataframe
 
+#detects missing value
+
 for k in df:
    for v in df[k]:
        if pd.isna(v): 
            error = {"error_type":"missing_value"; "column":k; "row": v.index()}
            return error
 
+data_types = {"temperature": "float", "presure": "float", "co": "float", "time": "date"}
 
+#detects data type_error
+for k in df:
+    for v in df[k]:
+        if data_type(v) != data_type[k]:
+            error = {"error_type": "data_type", "column": k, "expected_type": data_type[k], "type_found": data_type(v)}
+            return error
 
 
 #missing_value
