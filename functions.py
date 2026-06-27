@@ -21,9 +21,12 @@ def data_validation(dataframe):
 
 for k in df:
    for v in df[k]:
-       if v == "": 
+       if pd.isna(v): 
            error = {"error_type":"missing_value"; "column":k; "row": v.index()}
            return error
+
+
+
 
 #missing_value
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
