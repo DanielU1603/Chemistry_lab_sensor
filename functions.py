@@ -31,8 +31,8 @@ data_types = {"temperature": "float", "presure": "float", "co": "float", "time":
 
 #detects data type_error
 for k in df:
-    for v in df[k]:
-        if data_type(v) != data_type[k]:
+    for i,v in enumerate(df[k]):
+        if type(v) != data_type[k]:
             error = {"error_type": "data_type", "column": k, "expected_type": data_type[k], "type_found": data_type(v)}
             return error
 
