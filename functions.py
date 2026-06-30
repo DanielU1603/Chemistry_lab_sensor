@@ -1,5 +1,5 @@
 import pandas as pd
-
+import datetime
 #This function reads the file and transforms it to DataFrame type
 #The module load_file is separeted from the rest of the program to allow modifications in the file extension
 #without compromise the rest of the architecture. 
@@ -27,13 +27,13 @@ for k in df:
            error = {"error_type":"missing_value"; "column":k; "row": v.index()}
            return error
 
-data_types = {"temperature": "float", "presure": "float", "co": "float", "time": "date"}
-
+data_types = {"temperature": float, "pressure": float, "co2": float, "time": datetime.datetime}
+p
 #detects data type_error
 for k in df:
     for i,v in enumerate(df[k]):
-        if type(v) != data_type[k]:
-            error = {"error_type": "data_type", "column": k, "expected_type": data_type[k], "type_found": data_type(v)}
+        if type(v) != data_types[k]:
+            error = {"error_type": "data_type", "column": k, "row": i, "expected_type": data_types[k], "type_found": type(v)}
             return error
 
 
