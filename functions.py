@@ -8,6 +8,7 @@ def load_csv(file):
     df = pd.read_csv(file)
     return df
 
+data_types = {"temperature": (float, int), "pressure": (float, int), "co2": float, "time": datetime.datetime}
 
 def data_validation(dataframe):
    columns_found = set([column_name.lower() for column_name in df.columns])
@@ -20,8 +21,6 @@ def data_validation(dataframe):
     return dataframe
 
 #detects missing value
-data_types = {"temperature": float, "pressure": float, "co2": float, "time": datetime.datetime}
-
 for column in df:
    for value in df[column]:
        if pd.isna(value): 
@@ -36,6 +35,22 @@ for column in df:
             error = {"error_type": "data_type", "column": column, "row": i, "expected_type": data_types[column], "type_found": type(value)}
             return error
 
+
+for column in df: 
+    for index, value in enumerate(df[column]):
+        if not(isinstance(value, (data_types[column], int, float))):
+            error = {"error_type": "data_type", "column": column, "row": i, "expected_type": data_types[column], "type_found": type(value)}
+            return error 
+
+for column in df: 
+    for index, value in enumerate(df[column]):
+
+        if isinstance(value, data_types[column]):
+            continue
+        elif type(value) != data_types[column]:
+            error = {"error_type": "data_type", "column": column, "row": index, "expected_type": data_types[column], "type_found": type(value)}
+            return error 
+             
 
 #missing_value
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
