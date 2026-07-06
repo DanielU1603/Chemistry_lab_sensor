@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime
 import hashlib 
+from pathlib import Path 
 #This function reads the file and transforms it to DataFrame type
 #The module load_file is separeted from the rest of the program to allow modifications in the file extension
 #without compromise the rest of the architecture. 
@@ -48,9 +49,14 @@ error = {"error_type": "missing_value", "column": "", "row": ""}
 
 #data_type
 
-error = {"error_type":"invalid_type"; "column": "", "row": "", "input_type":"", "expected_type":""}
+error = {"error_type":"invalid_type", "column": "", "row": "", "input_type":"", "expected_type":""}
 
 def integrity_check(file_path): 
+
+    p = Path(file_path)
+    if p.exists(): 
+        with p.open() as f: 
+            f.read()
 
     h = hashlib.hash256() 
     
