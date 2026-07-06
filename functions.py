@@ -53,6 +53,8 @@ error = {"error_type":"invalid_type"; "column": "", "row": "", "input_type":"", 
 def integrity_check(file_path): 
 
     h = hashlib.hash256() 
+    
     if current_hash != original_hash:
         integrity_report = {"hash_status": "hash_modified", "original_hash": "", "current_hash": ""}
-        
+    else: 
+        integrity_report = {"hash_status": "hash_match", "original_hash": "", "current_hash": ""}
