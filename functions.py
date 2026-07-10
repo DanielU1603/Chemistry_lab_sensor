@@ -52,12 +52,16 @@ def integrity_check(file_path):
         with p.open() as f: 
             file_content = f.read()
 
-            h = hashlib.sha256() 
-            h.update(file_content)
+            hash_object = hashlib.sha256() 
+            current_hash = hash_object.update(file_content)
     
     if not(original_hash.exists()):
         integrity_report = {"hash_status": "first_execution", "current_hash":""}
+
     if current_hash != original_hash:
         integrity_report = {"hash_status": "hash_modified", "original_hash": "", "current_hash": ""}
+        
     else: 
         integrity_report = {"hash_status": "hash_match", "original_hash": "", "current_hash": ""}
+
+    return integrity_report 
