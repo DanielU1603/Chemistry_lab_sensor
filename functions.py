@@ -45,21 +45,18 @@ def data_validation(dataframe):
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
 #this fits with the structure of error.
 
-error = {"error_type": "missing_value", "column": "", "row": ""}  
-
-#data_type
-
-error = {"error_type":"invalid_type", "column": "", "row": "", "input_type":"", "expected_type":""}
-
 def integrity_check(file_path): 
 
     p = Path(file_path)
     if p.exists(): 
         with p.open() as f: 
-            f.read()
+            file_content = f.read()
 
-    h = hashlib.hash256() 
+            h = hashlib.sha256() 
+            h.update(file_content)
     
+    if not(original_hash.exists()):
+        integrity_report = {"hash_status": "first_execution", "current_hash":""}
     if current_hash != original_hash:
         integrity_report = {"hash_status": "hash_modified", "original_hash": "", "current_hash": ""}
     else: 
