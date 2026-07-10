@@ -45,7 +45,7 @@ def data_validation(dataframe):
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
 #this fits with the structure of error.
 
-def integrity_check(file_path): 
+def integrity_check(file_path, original_hash): 
 
     p = Path(file_path)
     if p.exists(): 
@@ -55,13 +55,14 @@ def integrity_check(file_path):
             hash_object = hashlib.sha256() 
             current_hash = hash_object.update(file_content)
     
-    if not(original_hash.exists()):
-        integrity_report = {"hash_status": "first_execution", "current_hash":""}
+        giif not(original_hash.exists()):
+            integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
 
-    if current_hash != original_hash:
-        integrity_report = {"hash_status": "hash_modified", "original_hash": "", "current_hash": ""}
-        
-    else: 
-        integrity_report = {"hash_status": "hash_match", "original_hash": "", "current_hash": ""}
+        if current_hash != original_hash:
+            integrity_report = {"hash_status": "hash_modified", "original_hash": original_hash, "current_hash": current_hash}
 
-    return integrity_report 
+        else: 
+            integrity_report = {"hash_status": "hash_match", "original_hash": original_hash, "current_hash": current_hash}
+
+        return integrity_report 
+    return {"error": "path_file not found"}
