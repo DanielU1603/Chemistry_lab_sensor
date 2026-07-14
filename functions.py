@@ -45,18 +45,22 @@ def data_validation(dataframe):
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
 #this fits with the structure of error.
 
-def integrity_check(file_path, original_hash): 
+def integrity_check(file_path, original_hash_path): 
 
     p = Path(file_path)
+    o_h = Path(original_hash_path)
     if p.exists(): 
-        with p.open() as f: 
-            file_content = f.read()
+        with p.open("rb") as f: 
+            digest = hashlib.file_digest(f, "sha256")
+            current_hash = digest.hexdigest()
+    else: 
+        integrity_report = {"error_type": "path file not found", "path": file_path}
+        return integrity_report
 
-            hash_object = hashlib.sha256() 
-            current_hash = hash_object.update(file_content)
-    
-        giif not(original_hash.exists()):
-            integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
+    if o_h.exists(): 
+        with o_h.open(o_h, "rb") as f: 
+            original_hash_digest = hashlib.file_digest(f, "sha256")
+            original_hash = original_hash_digest.hexdigest()
 
         if current_hash != original_hash:
             integrity_report = {"hash_status": "hash_modified", "original_hash": original_hash, "current_hash": current_hash}
@@ -65,4 +69,7 @@ def integrity_check(file_path, original_hash):
             integrity_report = {"hash_status": "hash_match", "original_hash": original_hash, "current_hash": current_hash}
 
         return integrity_report 
-    return {"error": "path_file not found"}
+    
+    else: 
+        integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
+        return integrity_report
