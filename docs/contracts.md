@@ -27,6 +27,18 @@ dataframe
 ## responsability: calculate hash and calculate with original hash if exist and was saved
 
 ## input: dataframe, original_hash.text
-## correct output: dataframe and {status: "hash_match"}
+## correct output: dataframe and {status: "hash_match", current_hash: "", original_hash: ""}
 ## if hash are different: {status: "different_hash", original_hash: "", current: "hash"}
 ## if first execution: {status: "first_execution"}
+
+
+#save_hash()
+## responsability: save hash of an individual file on a .txt file
+# input: string with a hash
+# output: .txt file with different hashes
+
+#load_hash()
+
+## responsability: load a hash previously stored in a .txt file
+# input: .txt file with different hashes
+# output: string containing the hash of a csv file

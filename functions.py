@@ -45,6 +45,12 @@ def data_validation(dataframe):
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
 #this fits with the structure of error.
 
+def save_hash(hash):
+    with open("hash_file.txt", "w") as f: 
+        f = f.write(hash)
+    return f
+
+
 def integrity_check(file_path, original_hash_path): 
 
     p = Path(file_path)
