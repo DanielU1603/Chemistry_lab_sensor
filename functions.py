@@ -50,6 +50,11 @@ def save_hash(hash):
         f = f.write(hash)
     return f
 
+def load_hash(hash_file):
+    with open(string(hash_file)) as f: 
+        hash = f.read()
+    return hash 
+
 
 def integrity_check(file_path, original_hash_path): 
 
