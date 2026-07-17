@@ -49,17 +49,10 @@ def save_hash(hash):
     with open("hash_file.txt", "w") as f: 
         f = f.write(hash)
 
-
-def load_hash(hash_file):
-    with open(string(hash_file)) as f: 
-        saved_hashes = f.read()
-    return saved_hashes
-
-
-def integrity_check(file_path, original_hash_path): 
+def integrity_check(file_path, hash_file): 
 
     p = Path(file_path)
-    o_h = Path(original_hash_path)
+    #o_h = Path(original_hash_path)
     if p.exists(): 
         with p.open("rb") as f: 
             digest = hashlib.file_digest(f, "sha256")
@@ -67,11 +60,9 @@ def integrity_check(file_path, original_hash_path):
     else: 
         integrity_report = {"error_type": "path file not found", "path": file_path}
         return integrity_report
-
-    if o_h.exists(): 
-        with o_h.open(o_h, "rb") as f: 
-            original_hash_digest = hashlib.file_digest(f, "sha256")
-            original_hash = original_hash_digest.hexdigest()
+    
+    with open(hash_file) as f:
+        for original_hash in f:
 
         if current_hash != original_hash:
             integrity_report = {"hash_status": "hash_modified", "original_hash": original_hash, "current_hash": current_hash}
