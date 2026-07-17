@@ -48,12 +48,12 @@ def data_validation(dataframe):
 def save_hash(hash):
     with open("hash_file.txt", "w") as f: 
         f = f.write(hash)
-    return f
+
 
 def load_hash(hash_file):
     with open(string(hash_file)) as f: 
-        hash = f.read()
-    return hash 
+        saved_hashes = f.read()
+    return saved_hashes
 
 
 def integrity_check(file_path, original_hash_path): 
@@ -83,4 +83,5 @@ def integrity_check(file_path, original_hash_path):
     
     else: 
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
+        save_hash(current_hash)
         return integrity_report
