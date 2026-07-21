@@ -63,13 +63,11 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
     if hash_file.exists():
 
         with open(hash_file) as f:
-            for original_hash in f:
-    
-
-             if current_hash != original_hash:
+            original_hash = f.readline()
+            if current_hash != original_hash:
                 integrity_report = {"hash_status": "hash_modified", "original_hash": original_hash, "current_hash": current_hash}
-                continue
-             else: 
+                return integrity_report 
+            else: 
                 integrity_report = {"hash_status": "hash_match", "original_hash": original_hash, "current_hash": current_hash}
 
             return integrity_report 
