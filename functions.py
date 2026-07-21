@@ -46,8 +46,8 @@ def data_validation(dataframe):
 #this fits with the structure of error.
 
 def save_hash(hash):
-    with open("hash_file.txt", "a") as f: 
-        f = f.write(hash)
+    with open("hash_file.txt", "w") as f: 
+         f.write(hash)
 
 def integrity_check(file_path, hash_file="hash_file.txt"): 
 
@@ -59,8 +59,10 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
     else: 
         integrity_report = {"error_type": "path file not found", "path": file_path}
         return integrity_report
+    hash_path = Path(hash_file)
+
     
-    if Path(hash_file).exists():
+    if hash_path.exists():
         with open(hash_file) as f:
             original_hash = f.readline()
             if current_hash != original_hash:
@@ -72,5 +74,4 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
     
     else: 
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
-        save_hash(current_hash)
         return integrity_report
