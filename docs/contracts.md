@@ -30,6 +30,7 @@ dataframe
 ## correct output: dataframe and {status: "hash_match", current_hash: "", original_hash: ""}
 ## if hash are different: {status: "different_hash", original_hash: "", current: "hash"}
 ## if first execution: {status: "first_execution"}
+## don't do: save hashes or print messages for the user
 
 
 #save_hash()
@@ -42,3 +43,15 @@ dataframe
 ## responsability: load a hash previously stored in a .txt file
 # input: .txt file with different hashes
 # output: string containing the hash of a csv file
+
+#anomaly_detection() 
+
+## responsability: calculate standar deviation from a group of data and compares with individual samples in each columns
+## input: a dataframe
+## output: {anomaly detected: "", column: "", value: ""} or {no anomalies detected}
+
+
+#visualization() 
+
+#app.py
+## this module decides if save_current hash in first exectution or ask user to update hash if a modification was detected

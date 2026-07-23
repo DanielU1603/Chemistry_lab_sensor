@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime
-import hashlib 
+import hashlib
+import numpy as np 
 from pathlib import Path 
 #This function reads the file and transforms it to DataFrame type
 #The module load_file is separeted from the rest of the program to allow modifications in the file extension
@@ -12,7 +13,7 @@ def load_csv(file):
 
 data_types = {"temperature": (float, int), "pressure": (float, int), "co2": (float, int), "time": datetime.datetime}
 
-def data_validation(dataframe):
+def data_validation(df):
    columns_found = set([column_name.lower() for column_name in df.columns])
    expected_columns = {"pressure", "temperature", "co2", "time"}
    missing_columns = expected_columns - columns_found
@@ -20,10 +21,10 @@ def data_validation(dataframe):
    if len(missing_columns) > 0:  
        error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
        return error
-    return dataframe
+   return df
 
 #detects missing value
-    for column in df:
+   for column in df:
         for value in df[column]:
             if pd.isna(value): 
                 error = {"error_type":"missing_value", "column":column, "row": value.index()}
@@ -32,7 +33,7 @@ def data_validation(dataframe):
 
 #detects data type_error
 
-    for column in df: 
+   for column in df: 
         for index, value in enumerate(df[column]):
 
              if isinstance(value, data_types[column]):
@@ -59,9 +60,9 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
     else: 
         integrity_report = {"error_type": "path file not found", "path": file_path}
         return integrity_report
-    hash_path = Path(hash_file)
-
     
+
+    hash_path = Path(hash_file)
     if hash_path.exists():
         with open(hash_file) as f:
             original_hash = f.readline()
@@ -75,3 +76,13 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
     else: 
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
         return integrity_report
+    
+def anomaly_detected(df): 
+
+    for column in df.columns: 
+      threeshold =  np.std(df[column])
+        for sample in df[column]:
+          if sample > threeshold or sample < threeshold:
+              result = {"anomaly_detected":"", "column": column, "value": sample}
+    
+    return result
