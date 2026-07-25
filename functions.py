@@ -77,12 +77,14 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
         return integrity_report
     
-def anomaly_detected(df): 
+def anomaly_detection(df): 
 
     for column in df.columns: 
-      threeshold =  np.std(df[column])
-        for sample in df[column]:
-          if sample > threeshold or sample < threeshold:
+      threeshold =  np.std(df[column])*2
+      avg = np.average(df[column])
+      for sample in df[column]:
+          distance = sample - avg 
+          if distance > threeshold or distance < threeshold:
               result = {"anomaly_detected":"", "column": column, "value": sample}
     
     return result
