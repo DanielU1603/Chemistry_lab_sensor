@@ -83,7 +83,7 @@ def anomaly_detection(df):
       threeshold =  np.std(df[column])*2
       avg = np.average(df[column])
       for sample in df[column]:
-          distance = sample - avg 
+          distance = abs(sample - avg)
           if distance > threeshold or distance < threeshold:
               result = {"anomaly_detected":"", "column": column, "value": sample}
     
