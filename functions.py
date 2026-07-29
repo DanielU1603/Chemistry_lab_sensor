@@ -89,12 +89,12 @@ def anomaly_detection(df):
       for i,sample in enumerate(df[column]):
           distance = sample - avg
 
-          if abs(distance) >= threshold:
+          if abs(distance) > threshold:
         
               anomaly = {"column": column, "value": sample, "row": i}
               anomalies.append(anomaly)
               
-
-    result = {"status":"anomalies_detected", "anomalies": anomalies}
+    if len(anomalies) > 0:
+        result = {"status":"anomalies_detected", "anomalies": anomalies}
     
     return result
