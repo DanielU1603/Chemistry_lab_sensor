@@ -77,19 +77,17 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
         return integrity_report
     
-def anomaly_detection(df): 
+def anomaly_detection(df, sigma): 
 
     result = {"status": "no anomalies detected"}
     anomalies = []
 
     for column in df.columns: 
-      threshold =  np.std(df[column])*2
-      avg = np.average(df[column])
+      threshold =  np.std(df[column])*sigma
+      avg = np.mean(df[column])
 
       for i,sample in enumerate(df[column]):
-          distance = sample - avg
-
-          if abs(distance) > threshold:
+          if abs(sample - avg) > threshold:
         
               anomaly = {"column": column, "value": sample, "row": i}
               anomalies.append(anomaly)
@@ -98,3 +96,4 @@ def anomaly_detection(df):
         result = {"status":"anomalies_detected", "anomalies": anomalies}
     
     return result
+

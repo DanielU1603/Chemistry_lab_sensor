@@ -50,6 +50,15 @@ dataframe
 ## input: a dataframe
 ## output: {anomaly detected: "", column: "", value: ""} or {no anomalies detected}
 
+#stuck_detector_detection()
+
+## responsability: report if the lab sensor is stuck in a value and the same value is repeated on across different samples. This functions covers the edge case where the standard deviation is 0 and the mean is 0.
+
+## input: a dataframe containing the columns with different variables (time, temperature, pressure anc co2 levels)
+
+## anomaly detected output: a dictionary indicating that an anomaly was detected, the value detected, the column and the rows where the value is repeated.
+## no anomalies detected output: a dictionary indicating the status of the analysis with a str showing "no anomalies detected" 
+
 
 #visualization() 
 
