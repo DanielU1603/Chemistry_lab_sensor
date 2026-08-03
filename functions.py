@@ -77,17 +77,16 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
         return integrity_report
     
-def stuck_detector_anomaly(df, sigma):
+def constant_signal_detection(df, sigma):
 
     columns = df.columns
     counter = 0
     warn = {"status": "no anomalies detected"}
-    mean = np.mean(df[column])
-    threshold = np.std(df[column])*sigma
 
     for column in columns:
         for current_sample,next_sample in zip(df[column], df[column][1,:]):
-            if abs(current_sample - mean) == threshold and current_sample == next_sample:
+            
+            if current_sample == next_sample:
                 counter +=1
               
             if counter >= 5: 
