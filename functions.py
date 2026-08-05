@@ -94,9 +94,14 @@ def constant_signal_detection(df):
                 rows.append(df[column].index(current_sample))
                 values.append(current_sample)
 
+            elif current_sample != next_sample and counter < 5: 
+                counter = 0 
+
             if counter >= 5: 
                     warn = {"status": "counter_stuck", "column": column, "rows": rows, "values": values} 
                     counter = 0
+            else: 
+
 
     return warn 
 
