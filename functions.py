@@ -86,23 +86,24 @@ def constant_signal_detection(df):
     for column in columns:
         counter = 0
         rows = []
-        values = []
+    
         for current_sample,next_sample in zip(df[column], df[column].iloc[1:]):
 
             if current_sample == next_sample:
                 counter +=1
-                rows.append(df[column].index(current_sample))
-                values.append(current_sample)
+                rows.append(df[column].to_list().index(current_sample))
+               
 
             elif current_sample != next_sample and counter < 5: 
-                counter = 0 
+                counter = 0
+                del rows[:]
 
-            if counter >= 5: 
-                    warn = {"status": "counter_stuck", "column": column, "rows": rows, "values": values} 
-                    counter = 0
-            else: 
-
-
+            elif counter >= 5:
+            
+                warn = {"status": "counter_stuck", "column": column, "rows": rows, "value": (rows[0], rows[-1])} 
+                counter = 0
+                del rows [:]
+            
     return warn 
 
         
