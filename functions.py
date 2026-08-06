@@ -80,29 +80,28 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
 def constant_signal_detection(df):
 
     columns = df.columns
-    
     warn = {"status": "no anomalies detected"}
 
     for column in columns:
         counter = 0
         rows = []
     
-        for current_sample,next_sample in zip(df[column], df[column].iloc[1:]):
+        for i, (current_sample, next_sample) in enumerate(zip(df[column], df[column].iloc[1:])):
+                
+                if current_sample == next_sample:
+                    counter +=1
+                    rows.append(i)
 
-            if current_sample == next_sample:
-                counter +=1
-                rows.append(df[column].to_list().index(current_sample))
+                    if counter >= 5:
+                                
+                        warn = {"status": "counter_stuck", "column": column, "rows": rows, "value": (rows[0], rows[-1])} 
+                        counter = 0
+                        del rows [:]
                
+                if current_sample != next_sample and counter < 5: 
+                         counter = 0
+                         del rows[:]
 
-            elif current_sample != next_sample and counter < 5: 
-                counter = 0
-                del rows[:]
-
-            elif counter >= 5:
-            
-                warn = {"status": "counter_stuck", "column": column, "rows": rows, "value": (rows[0], rows[-1])} 
-                counter = 0
-                del rows [:]
             
     return warn 
 
