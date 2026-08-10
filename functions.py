@@ -101,7 +101,7 @@ def constant_signal_detection(df):
                         
 
         
-                if current_sample != next_sample and counter < 5: 
+                else: 
                          counter = 0
                          del rows[:]
 
