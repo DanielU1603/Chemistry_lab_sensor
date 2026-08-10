@@ -85,17 +85,22 @@ def constant_signal_detection(df):
     for column in columns:
         counter = 0
         rows = []
+        index = []
     
         for i, (current_sample, next_sample) in enumerate(zip(df[column], df[column].iloc[1:])):
                 
                 if current_sample == next_sample:
                     counter +=1
-                    rows.append(i)
+                    rows.append(current_sample)
 
-                    if counter >= 5:      
-                        warn = {"status": "counter_stuck", "column": column, "rows": rows, "value": (rows[0], rows[-1])} 
+                    if counter >= 5:
+                        for i,_ in enumerate(rows):
+                            index.append(i) 
+                                
+                        warn = {"status": "counter_stuck", "column": column, "start_row": rows[0], "end_row": rows[-1], "value": rows[0]} 
                         
-               
+
+        
                 if current_sample != next_sample and counter < 5: 
                          counter = 0
                          del rows[:]
