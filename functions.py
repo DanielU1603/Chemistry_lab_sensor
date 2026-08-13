@@ -76,6 +76,9 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
     else: 
         integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
         return integrity_report
+
+def pend():
+    raise NotImplementedError
     
 def constant_signal_detection(df):
 
@@ -84,26 +87,21 @@ def constant_signal_detection(df):
 
     for column in columns:
         counter = 0
-        rows = []
         index = []
     
         for i, (current_sample, next_sample) in enumerate(zip(df[column], df[column].iloc[1:])):
                 
                 if current_sample == next_sample:
-                    counter +=1
-                    rows.append(current_sample)
-
+                    counter += 1
+        
                     if counter >= 5:
-                        for i,_ in enumerate(rows):
-                            index.append(i) 
-                                
-                        warn = {"status": "counter_stuck", "column": column, "start_row": rows[0], "end_row": rows[-1], "value": rows[0]} 
-                        
-
+                        index.append(i)
+                  
+                        warn = {"status": "counter_stuck", "column": column, "start_row": index[0], "end_row": index[-1], "value": df[column].iloc[index[0]]}
         
                 else: 
-                         counter = 0
-                         del rows[:]
+                    counter = 0
+                    index.clear()
 
             
     return warn 
