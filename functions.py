@@ -86,24 +86,23 @@ def constant_signal_detection(df):
     warn = {"status": "no anomalies detected"}
 
     for column in columns:
-        counter = 0
         index = []
+        anomalies = []
     
         for i, (current_sample, next_sample) in enumerate(zip(df[column], df[column].iloc[1:])):
                 
                 if current_sample == next_sample:
-                    counter += 1
-        
-                    if counter >= 5:
-                        index.append(i)
-                  
-                        warn = {"status": "counter_stuck", "column": column, "start_row": index[0], "end_row": index[-1], "value": df[column].iloc[index[0]]}
-        
-                else: 
-                    counter = 0
-                    index.clear()
+                    index.append(i)
 
-            
+                if current_sample != next_sample:
+                        if len(index) >= 5: 
+                            anomaly = {"column": column, "start_row": index[0], "end_row": index[-1], "value": df[column].iloc[index[0]]}
+                            anomalies.append(anomaly)
+                            warn = {"status": "counter_stuck", "anomalies": anomalies}
+                            return warn 
+                        else:
+                         index.clear()
+          
     return warn 
 
         
