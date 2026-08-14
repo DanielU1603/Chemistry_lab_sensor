@@ -95,11 +95,12 @@ def constant_signal_detection(df):
                     index.append(i)
 
                 if current_sample != next_sample:
+                        
                         if len(index) >= 5: 
-                            anomaly = {"column": column, "start_row": index[0], "end_row": index[-1], "value": df[column].iloc[index[0]]}
+                            anomaly = {"column": column, "start_row": index[0], "end_row": i + 1, "value": df[column].iloc[index[0]]}
                             anomalies.append(anomaly)
                             warn = {"status": "counter_stuck", "anomalies": anomalies}
-                            return warn 
+    
                         else:
                          index.clear()
           
