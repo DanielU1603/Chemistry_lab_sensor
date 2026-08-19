@@ -62,5 +62,13 @@ dataframe
 
 #visualization() 
 
+## input: dictionary of anomalies detected, dictionary of stuck detector anomalies and standard deviation of values on each column. 
+## output: a pie chart showing the percentage of anomalies per category on the dataframe, a dispersion plot showing the clusters of normal data compared to anomalie values
+
+## output in case of error: 
+## 1-There's missing a dictionary
+## 2-There's missing a value inside a dictionary
+## 3-There's no data to plow
+
 #app.py
 ## this module decides if save_current hash in first exectution or ask user to update hash if a modification was detected

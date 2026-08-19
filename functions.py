@@ -2,7 +2,10 @@ import pandas as pd
 import datetime
 import hashlib
 import numpy as np 
+from collections import Counter
+import matplotlib.pyplot as plt
 from pathlib import Path 
+
 #This function reads the file and transforms it to DataFrame type
 #The module load_file is separeted from the rest of the program to allow modifications in the file extension
 #without compromise the rest of the architecture. 
@@ -136,4 +139,33 @@ def anomaly_detection(df, sigma):
         result = {"status":"anomalies_detected", "anomalies": anomalies}
     
     return result
+
+def visualization(df, warn, anomalies):
+
+    labels = []
+    elements  = []
+    sizes = []
+
+    #data to plot
+
+    for column in df["columns"]:
+        labels.append(column)
+
+    for anomaly in warn["anomalies"]: 
+        elements.append(anomaly["column"])
+
+    c = Counter(elements)
+
+    for label in labels:
+        sizes.append(c[label])
+    #plot
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
+
+    
+
+    
+        
+
+
+
 
