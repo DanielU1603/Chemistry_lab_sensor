@@ -24,7 +24,7 @@ def data_validation(df):
    if len(missing_columns) > 0:  
        error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
        return error
-   return df
+   
 
 #detects missing value
    for column in df:
@@ -44,6 +44,7 @@ def data_validation(df):
              error = {"error_type": "data_type", "column": column, "row": index, "expected_type": data_types[column], "type_found": type(value)}
              return error 
              
+   return df 
 
 #missing_value
 #data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
@@ -149,6 +150,7 @@ def visualization(df, warn, anomalies):
     labels = []
     elements  = []
     sizes = []
+    anomal_points = []
 
     #data to plot
 
@@ -165,7 +167,17 @@ def visualization(df, warn, anomalies):
     #plot
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
-    
+
+
+    for anomaly in anomalies["anomalies"]:
+        anomal_points.append(["value"])
+
+    plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
+    plt.yticks([])
+    plt.xlabel("Measurement Value")
+    plt.title("1-D Scatter-Plot for anomalies in dataframe")
+    plt.show()
+
 
     
         
