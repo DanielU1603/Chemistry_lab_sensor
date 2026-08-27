@@ -68,7 +68,7 @@ dataframe
 ## output in case of error: 
 ## 1-There's missing a dictionary
 ## 2-There's missing a value inside a dictionary
-## 3-There's no data to plow
+## 3-There's no data to plot
 
 #app.py
 ## this module decides if save_current hash in first exectution or ask user to update hash if a modification was detected

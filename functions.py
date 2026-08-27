@@ -141,9 +141,9 @@ def anomaly_detection(df, sigma):
               anomalies.append(anomaly)
               
     if len(anomalies) > 0:
-        result = {"status":"anomalies_detected", "anomalies": anomalies}
+        anomalies_dic = {"status":"anomalies_detected", "anomalies": anomalies}
     
-    return result
+    return anomalies_dic
 
 def visualization(df, warn, anomalies):
 
@@ -170,7 +170,7 @@ def visualization(df, warn, anomalies):
 
 
     for anomaly in anomalies["anomalies"]:
-        anomal_points.append(["value"])
+        anomal_points.append(anomaly["value"])
 
     plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
     plt.yticks([])
