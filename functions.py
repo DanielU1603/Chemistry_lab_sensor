@@ -127,7 +127,7 @@ def constant_signal_detection(df):
     
 def anomaly_detection(df, sigma): 
 
-    result = {"status": "no anomalies detected"}
+    anomalies_dic = {"status": "no anomalies detected"}
     anomalies = []
 
     for column in df.columns: 
@@ -145,32 +145,43 @@ def anomaly_detection(df, sigma):
     
     return anomalies_dic
 
-def visualization(df, warn, anomalies):
+def visualization(df, warn, anomalies_dic):
 
     labels = []
     elements  = []
     sizes = []
     anomal_points = []
+    normal_points = []
 
     #data to plot
 
-    for column in df["columns"]:
+    for column in df.columns:
         labels.append(column)
 
-    for anomaly in warn["anomalies"]: 
-        elements.append(anomaly["column"])
+    for constant_anomaly, statistical_anomaly in zip(warn["anomalies"], anomalies_dic["anomalies"]): 
+        elements.append(constant_anomaly["column"])
+        elements.append(statistical_anomaly)
 
     c = Counter(elements)
 
     for label in labels:
-        sizes.append(c[label])
+        if c[label] > 0:
+            sizes.append(c[label])
     #plot
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
 
 
-    for anomaly in anomalies["anomalies"]:
-        anomal_points.append(anomaly["value"])
+    for constant_anomaly, statistical_anomaly in zip(warn["anomalies"], anomalies_dic["anomalies"]):
+        anomal_points.append(constant_anomaly["value"])
+        anomal_points.append(statistical_anomaly["value"])
+
+    anomal_values_set = set([value for value in anomal_points])
+
+    for column in df.columns: 
+        for sample in df[column]:
+                  
+
 
     plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
     plt.yticks([])
