@@ -169,9 +169,12 @@ def visualization(df, warn, anomalies_dic):
 
     c = Counter(elements)
 
-    for label in labels:
+    for label in df.columns:
         if c[label] > 0:
+            labels.append(label)
             sizes.append(c[label])
+        else: 
+            raise ValueError("there are no anomalies to plot")
     #plot
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
