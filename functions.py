@@ -152,15 +152,20 @@ def visualization(df, warn, anomalies_dic):
     sizes = []
     anomal_points = []
     normal_points = []
+    std = []
 
     #data to plot
 
     for column in df.columns:
         labels.append(column)
+        column_std = {"column": column, "standard_deviation": np.std(df[column])}
+        std.append(column_std)
 
-    for constant_anomaly, statistical_anomaly in zip(warn["anomalies"], anomalies_dic["anomalies"]): 
+    for constant_anomaly in warn["anomalies"]: 
         elements.append(constant_anomaly["column"])
-        elements.append(statistical_anomaly)
+
+    for statistical_anomaly in anomalies_dic["anomalies"]:
+        elements.append(statistical_anomaly["column"])
 
     c = Counter(elements)
 
@@ -171,15 +176,18 @@ def visualization(df, warn, anomalies_dic):
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
 
-
-    for constant_anomaly, statistical_anomaly in zip(warn["anomalies"], anomalies_dic["anomalies"]):
+    for constant_anomaly in warn["anomalies"]
         anomal_points.append(constant_anomaly["value"])
+
+    for statistical_anomaly in anomalies_dic["anomalies"]:
         anomal_points.append(statistical_anomaly["value"])
 
-    anomal_values_set = set([value for value in anomal_points])
 
     for column in df.columns: 
         for sample in df[column]:
+            if not sample in anomal_points: 
+                normal_points.append(sample)
+
                   
 
 
