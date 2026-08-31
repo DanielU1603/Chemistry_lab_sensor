@@ -153,6 +153,8 @@ def visualization(df, warn, anomalies_dic):
     anomal_points = []
     normal_points = []
     std = []
+    anomal_points_dic = {}
+    normal_points_dic = {}
 
     #data to plot
 
@@ -180,16 +182,26 @@ def visualization(df, warn, anomalies_dic):
 
 
     for constant_anomaly in warn["anomalies"]
-        anomal_points.append(constant_anomaly["value"])
-
+        anomal_points.append({"value": constant_anomaly["value"], "column": constant_anomaly["column"]}) 
+        anomal_points_dic = {"temperature": [], "pressure": [], "co2": [], "time": []}
     for statistical_anomaly in anomalies_dic["anomalies"]:
         anomal_points.append(statistical_anomaly["value"])
 
 
-    for column in df.columns: 
+    for column in df.columns:
+    
         for sample in df[column]:
             if not sample in anomal_points: 
                 normal_points.append(sample)
+                
+            if column == "temperature": 
+                anomal_points_dic["temperature"].append(sample)
+            if column == "pressure": 
+                anomal_points_dic["pressure"].append(sample)
+            if column == "co2": 
+                anomal_points_dic["co2"].append(sample)
+            if column == "time":
+                anomal_points_dic["time"].append(sample)
 
                   
 
