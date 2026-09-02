@@ -153,8 +153,8 @@ def visualization(df, warn, anomalies_dic):
     anomal_points = []
     normal_points = []
     std = []
-    anomal_points_dic = {}
-    normal_points_dic = {}
+    anomal_points_dic = {"temperature": [], "pressure": [], "co2": [], "time": []}
+    normal_points_dic = {"temperature": [], "pressure": [], "co2": [], "time": []}
 
     #data to plot
 
@@ -181,27 +181,33 @@ def visualization(df, warn, anomalies_dic):
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
 
-    for constant_anomaly in warn["anomalies"]
-        anomal_points.append({"value": constant_anomaly["value"], "column": constant_anomaly["column"]}) 
-        anomal_points_dic = {"temperature": [], "pressure": [], "co2": [], "time": []}
-    for statistical_anomaly in anomalies_dic["anomalies"]:
-        anomal_points.append(statistical_anomaly["value"])
-
+      for anomaly in anomalies_dic["anomalies"]
+    
+            if anomaly["column"] == "temperature":
+                anomal_points_dic["temperature"].append(anomaly["value"])
+    
+            if anomaly["column"] == "pressure": 
+                anomal_points_dic["pressure"].append(anomaly["value"])
+    
+            if anomaly["column"] == "co2":
+                anomal_points_dic["co2"].append(anomaly["co2"])
+    
+            if anomaly["time"] == "time": 
+                anomal_points_dic["time"].append(anomaly["time"]) 
 
     for column in df.columns:
-    
         for sample in df[column]:
-            if not sample in anomal_points: 
-                normal_points.append(sample)
-                
+
             if column == "temperature": 
-                anomal_points_dic["temperature"].append(sample)
+                normal_points_dic["temperature"].append(sample)
             if column == "pressure": 
-                anomal_points_dic["pressure"].append(sample)
+                normal_points_dic["pressure"].append(sample)
             if column == "co2": 
-                anomal_points_dic["co2"].append(sample)
+                normal_points_dic["co2"].append(sample)
             if column == "time":
-                anomal_points_dic["time"].append(sample)
+                normal_points_dic["time"].append(sample)
+
+ 
 
                   
 
