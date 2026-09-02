@@ -181,7 +181,7 @@ def visualization(df, warn, anomalies_dic):
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
 
-      for anomaly in anomalies_dic["anomalies"]
+    for anomaly in anomalies_dic["anomalies"]
     
             if anomaly["column"] == "temperature":
                 anomal_points_dic["temperature"].append(anomaly["value"])
@@ -207,7 +207,7 @@ def visualization(df, warn, anomalies_dic):
             if column == "time":
                 normal_points_dic["time"].append(sample)
 
- 
+    normal_points_dic[column] = set(normal_points_dic[column]) - set(anomal_points_dic[column])
 
                   
 
