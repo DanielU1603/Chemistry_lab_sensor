@@ -151,10 +151,11 @@ def visualization(df, warn, anomalies_dic):
     elements  = []
     sizes = []
     anomal_points = []
-    normal_points = []
     std = []
-    anomal_points_dic = {"temperature": [], "pressure": [], "co2": [], "time": []}
-    normal_points_dic = {"temperature": [], "pressure": [], "co2": [], "time": []}
+
+    indexes_dic = {"temperature": [], "pressure": [], "co2": []}
+    anomal_points_dic = {"temperature": [], "pressure": [], "co2": []}
+    normal_points_dic = {"temperature": [], "pressure": [], "co2": []}
 
     #data to plot
 
@@ -181,7 +182,7 @@ def visualization(df, warn, anomalies_dic):
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
 
-    for anomaly in anomalies_dic["anomalies"]
+    for anomaly in anomalies_dic["anomalies"]:
     
             if anomaly["column"] == "temperature":
                 anomal_points_dic["temperature"].append(anomaly["value"])
@@ -195,23 +196,34 @@ def visualization(df, warn, anomalies_dic):
             if anomaly["time"] == "time": 
                 anomal_points_dic["time"].append(anomaly["time"]) 
 
+
     for column in df.columns:
-        for sample in df[column]:
 
-            if column == "temperature": 
-                normal_points_dic["temperature"].append(sample)
-            if column == "pressure": 
-                normal_points_dic["pressure"].append(sample)
+        for anomaly in anomalies_dic["anomalies"]: 
+            if anomaly["column"] == column: 
+                indexes_dic[column].append(anomaly["row"])
+
+        for i, sample in enumerate(df[column]):
+
+            if column == "temperature":
+                if i in indexes_dic[column]:
+                    anomal_points_dic["temperature"].append(sample)
+                else:
+                    normal_points_dic["temperature"].append(sample)
+
+            if column == "pressure":
+                if i in indexes_dic[column]: 
+                    anomal_points_dic["pressure"].append(sample)
+                else: 
+                    normal_points_dic["pressure"].append(sample)
+
             if column == "co2": 
-                normal_points_dic["co2"].append(sample)
-            if column == "time":
-                normal_points_dic["time"].append(sample)
+                if i in indexes_dic[column]:
+                    anomal_points_dic["co2"].append(sample)
+                else:
+                    normal_points_dic["co2"].append(sample)
 
-    normal_points_dic[column] = set(normal_points_dic[column]) - set(anomal_points_dic[column])
-
-                  
-
-
+            
     plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
     plt.yticks([])
     plt.xlabel("Measurement Value")
