@@ -27,9 +27,9 @@ class TestClass:
 # -------------------visualization_function_test
 warn_anomalies = [{"column": "temperature", "start_row": 0, "end_row": 5, "value": 29}, {"column": "temperature", "start_row": 15, "end_row": 20, "value": 202}]
 warn = {"status": "counter_stuck", "anomalies": warn_anomalies}
-anomalies = [{"column": "temperature", "value": 23, "row":3}, {"column": "temperature", "value": 84, "row": 70}]
+anomalies = [{"column": "temperature", "value": 23, "row":6}, {"column": "temperature", "value": 84, "row": 9}]
 anomalies_dic = {"status": "anomalies_detected", "anomalies": anomalies}
-df = pd.DataFrame({"temperature": [2, 3, 2, 5, 92, 2, 24], "pressure": [15, 20, 18, 17, 102, 14, 2]})
+df = pd.DataFrame({"temperature": [29, 29, 29, 29, 29, 2, 23, 2, 5, 84, 2, 24, 2, 2, 2, 202, 202, 202, 202, 202], "pressure": [15, 20, 18, 17, 102, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]})
 
 visualization(df, warn, anomalies_dic)
 

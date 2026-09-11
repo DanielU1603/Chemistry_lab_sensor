@@ -177,35 +177,8 @@ def visualization(df, warn, anomalies_dic):
             labels.append(label)
             sizes.append(c[label])
 
-    plot
-    """plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)"""
-
-
-    """for anomaly in anomalies_dic["anomalies"]:
-    
-            if anomaly["column"] == "temperature":
-                anomal_points_dic["temperature"].append(anomaly["value"])
-    
-            if anomaly["column"] == "pressure": 
-                anomal_points_dic["pressure"].append(anomaly["value"])
-    
-            if anomaly["column"] == "co2":
-                anomal_points_dic["co2"].append(anomaly["co2"])
-    
-            #if anomaly["time"] == "time": 
-                #anomal_points_dic["time"].append(anomaly["time"])"""
-
-    #en este punto son necesarias dos correciones en las pruebas: 
-    #1.) las puntos que se están añadiendo al diccionario de anomalías provienen de anomalies_dic
-    #2.) los puntos que se están añadiendo al diccionario de aonmalías provienen del dataframe
-    #es importante tener en cuenta que las anomalías de ejemplo que se crearon en anomalies_dic
-    #no coinciden con las anomalías presentes en el DataFrame de ejemplo
-    #los índices de las anomalías dentro del DataFrame no son los mismos índices de las anomalías en anomalies_dic
-    #se debe primero añadir una especie de loop para tener en cuenta los puntos de warn
-    #no obstante, se debe revisar que los ejemplos en anomalies_dic tengan indices que coincidan con el dataframe
-    #luego, se debería comprobar que existan anomalías consecutivas y que también se añaden bien
-    #finalmente, sería bueno implementar las funciones creadas en pasos anteriores en vez de introducir los
-    #parámetros df, warn, anomalies_dic ya que las funciones que detectan devuelven estas estructuras de datos.
+    #plot
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
 
     for column in df.columns:
 
@@ -214,8 +187,8 @@ def visualization(df, warn, anomalies_dic):
 
         for anomaly in warn["anomalies"]:
             if anomaly["column"] == column: 
-                for index in range(anomaly["start_row"], (anomaly["end_row"]+1))
-                indexes_dic[column].append(index)
+                for index in range(anomaly["start_row"], anomaly["end_row"]):
+                    indexes_dic[column].append(index)
 
         #this block has the responsability of including all individual statistical anomalies
         #found with anomaly_detection function 
@@ -223,16 +196,16 @@ def visualization(df, warn, anomalies_dic):
         for anomaly in anomalies_dic["anomalies"]: 
             if anomaly["column"] == column: 
                 indexes_dic[column].append(anomaly["row"])
-                print(f"this is the row with the anomaly: {anomaly["row"]}")
+         
 
         for i, sample in enumerate(df[column]):
-            print(f"this is an individual index per step: {i}")
+ 
             #el dataset solo tiene 6 muestras por lo que solo se toma la anomalía con el índice 3
 
             if column == "temperature":
                 if i in indexes_dic[column]:
                     anomal_points_dic[column].append(sample)
-                    print(f"this is index #: {i} and this is column: {column}")
+   
                 else:
                     normal_points_dic[column].append(sample)
 
@@ -248,12 +221,26 @@ def visualization(df, warn, anomalies_dic):
                 else:
                     normal_points_dic[column].append(sample)
 
-    return anomal_points_dic, normal_points_dic, indexes_dic        
-    """plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
+
+  
+    indexes_temperature_normal_points = np.zeros_like(normal_points_dic["temperature"])
+    indexes_temperature_anomal_points = np.ones_like(anomal_points_dic["temperature"])
+
+
+    plt.scatter(indexes_temperature_normal_points, normal_points_dic["temperature"], color='blue', marker='s', label="normal points")
+    plt.scatter(indexes_temperature_anomal_points, anomal_points_dic["temperature"], color='orange', marker='o', label="anomal points")
+
+    plt.title('Scatter Plot for Temperature Anomalies')
+    plt.xlabel('Indexes')
+    plt.xticks([0, 1], ["temperature normal points", "temperature anomal points"])
+    plt.ylabel("temperature values")
+    plt.show()
+
+    plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
     plt.yticks([])
     plt.xlabel("Measurement Value")
     plt.title("1-D Scatter-Plot for anomalies in dataframe")
-    plt.show()"""
+    plt.show()
 
 
     
