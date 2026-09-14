@@ -222,9 +222,26 @@ def visualization(df, warn, anomalies_dic):
                     normal_points_dic[column].append(sample)
 
 
+    indexes_normal_points_dic = {"temperature": [], "pressure": [], "co2": []}
+    indexes_anomal_points_dic = {"temperature": [], "pressure": [], "co2": []}
+    
+    for column in df.columns:
+        indexes_normal_points_dic[column].append(np.zeros_like(normal_points_dic[column]))
+        indexes_anomal_points_dic[column].append(np.ones_like(anomal_points_dic[column]))
+
+    for column in df.columns: 
+        plt.scatter(indexes_normal_points_dic[column], normal_points_dic[column], color='blue', marker='s', label='normal points')
+        plt.scatter(indexes_anomal_points_dic[column], anomal_points_dic[column,] color='green', marker='o', label='anomal points') 
+    
   
     indexes_temperature_normal_points = np.zeros_like(normal_points_dic["temperature"])
     indexes_temperature_anomal_points = np.ones_like(anomal_points_dic["temperature"])
+
+    indexes_pressure_normal_points = np.zeros_like(normal_points_dic["pressure"])
+    indexes_pressure_anomal_points = np.zeros_like(anomal_points_dic["pressure"])
+
+    indexes_co2_normal_points = np.zeros_like(normal_points_dic["co2"])
+    indexes_co2_anomal_points = np.zeros_like(anomal_points_dic["co2"])
 
 
     plt.scatter(indexes_temperature_normal_points, normal_points_dic["temperature"], color='blue', marker='s', label="normal points")
@@ -235,6 +252,21 @@ def visualization(df, warn, anomalies_dic):
     plt.xticks([0, 1], ["temperature normal points", "temperature anomal points"])
     plt.ylabel("temperature values")
     plt.show()
+
+
+
+    plt.scatter(indexes_pressure_normal_points, normal_points_dic["pressure"], color='blue', marker='s', label="normal points")
+    plt.scatter(indexes_pressure_anomal_points, anomal_points_dic["pressure"], color='green', marker='o', label='anomal points')
+
+
+    plt.title('1-D scatter plot for pressure anomalies')
+    plt.xticks([0,1], ('normal points', 'anomal points'))
+    plt.xlabel('Indexes')
+    plt.ylabel('pressure values')
+    plt.show()
+
+    plt.scatter(indexes_co2_normal_points, normal_points_dic["co2"], color='blue', marker='s', label='normal points')
+    plt.scatter(indexes_co2_anomal_points, anomal_points_dic["co2"], color='green', marker='s', label='anomal points')
 
     plt.scatter(anomal_points, [0]*len(anomal_points), alpha=0.7, edgecolors="black")
     plt.yticks([])
