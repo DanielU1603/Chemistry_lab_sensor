@@ -38,6 +38,11 @@ anomal_points_dic, normal_points_dic, indexes_dic = visualization(df,warn, anoma
 print(anomal_points_dic)
 print(normal_points_dic)
 print(indexes_dic)
+
+#1-pressure no muestra anomalías en el scatter plot
+#2-no hay return en la función de visualización por lo que no devuelve los diccionarios para ver cómo se clasificaron los puntos
+#3-el diagrama de pie no está graficándose como debería porque el contenido de sizes es diferente al contenido de labels.
+
 #print(warn["anomalies"])
 #print(anomalies_dic["anomalies"])
 

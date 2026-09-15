@@ -4,6 +4,7 @@ import hashlib
 import numpy as np 
 from collections import Counter
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from pathlib import Path 
 
 #This function reads the file and transforms it to DataFrame type
@@ -147,7 +148,7 @@ def anomaly_detection(df, sigma):
 
 def visualization(df, warn, anomalies_dic):
 
-    labels = []
+    categories = []
     elements  = []
     sizes = []
     anomal_points = []
@@ -160,7 +161,7 @@ def visualization(df, warn, anomalies_dic):
     #data to plot
 
     for column in df.columns:
-        labels.append(column)
+        categories.append(column)
         column_std = {"column": column, "standard_deviation": np.std(df[column])}
         std.append(column_std)
 
@@ -172,13 +173,19 @@ def visualization(df, warn, anomalies_dic):
 
     c = Counter(elements)
 
-    for label in df.columns:
+    colors = mpl.colormaps['Dark2'].colors
+    label_colors = []
+    for i, label in enumerate(df.columns):
         if c[label] > 0:
-            labels.append(label)
+            categories.append(label)
             sizes.append(c[label])
+            label_colors.append(colors[i])
 
     #plot
-    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
+    """for i, label in enumerate(c):
+         plt.pie(sizes, labels=categories, colors=colors[i], autopct="%1.1f%%", shadow=True, startangle=140)"""
+    print(f'these are the categories: {categories}')
+    print(f'these are the sizes: {sizes}')
 
     for column in df.columns:
 
@@ -229,12 +236,19 @@ def visualization(df, warn, anomalies_dic):
         indexes_normal_points_dic[column].append(np.zeros_like(normal_points_dic[column]))
         indexes_anomal_points_dic[column].append(np.ones_like(anomal_points_dic[column]))
 
+
     for column in df.columns: 
+
         plt.scatter(indexes_normal_points_dic[column], normal_points_dic[column], color='blue', marker='s', label='normal points')
-        plt.scatter(indexes_anomal_points_dic[column], anomal_points_dic[column,] color='green', marker='o', label='anomal points') 
-    
+        plt.scatter(indexes_anomal_points_dic[column], anomal_points_dic[column], color='green', marker='o', label='anomal points') 
+
+        plt.title(f'1-D scatter plot for normal vs anomal points in {column} variable')
+        plt.xticks([0,1], ['normal points', 'anomal points'])
+        plt.xlabel('Indexes')
+        plt.ylabel(f'{column} values')
+        plt.show()
   
-    indexes_temperature_normal_points = np.zeros_like(normal_points_dic["temperature"])
+    """indexes_temperature_normal_points = np.zeros_like(normal_points_dic["temperature"])
     indexes_temperature_anomal_points = np.ones_like(anomal_points_dic["temperature"])
 
     indexes_pressure_normal_points = np.zeros_like(normal_points_dic["pressure"])
@@ -272,7 +286,7 @@ def visualization(df, warn, anomalies_dic):
     plt.yticks([])
     plt.xlabel("Measurement Value")
     plt.title("1-D Scatter-Plot for anomalies in dataframe")
-    plt.show()
+    plt.show()"""
 
 
     
