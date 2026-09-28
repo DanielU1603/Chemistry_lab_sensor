@@ -245,9 +245,31 @@ def visualization(df, warn, anomalies_dic):
         plt.ylabel(f'{column} values')
         plt.show()
     return anomal_points_dic, normal_points_dic, indexes_dic
-  
 
-    
+
+  def report_generation(warn, anomalies_dic): 
+    """input: stuck_detector_aomalies dic (dictionary of dictionaries) with an anomaly on each dictionary, 
+    statistical anomalies dictionary (dictionary of dictionaries) with an anomaly on each dictionary, 
+    integrity check result (dictonary) containing the result after checking the identity (hash) of the uploaded file,
+    data validation result (dictionary) with keys explaining if there are columns or information missing"""
+    stuck_detector_anomalies = []
+    statistical_anomalies = []
+    with open("report.txt", w, encoding="UTF-8") as file: 
+
+        if len(warn["anomalies"]) > 0:
+            file.write("Stuck Detector Anomaly")
+            file.write(f"There were found {len(warn["anomalies"])} in the file")
+            for anomaly in warn["anomalies"]:
+                stuck_detector_anomalies.append(anomaly["row"])
+            file.write(f"The statistical anomalies were found on the following rows: {stuck_detector_anomalies}")
+        
+        if len(anomalies_dic["anomalies"]) > 0: 
+            file.write("Statistical Anomaly Section")
+            file.write(f"There were found {len(anomalies_dic["anomalies"])} in the file")
+
+            for anomaly in anomalies_dic["anomalies"]: 
+                stuck_detector_anomalies.append(anomaly["row"])
+            file.write(f"The statistical anomalies were found on the following rows: {statistical_anomalies}")
         
 
 
