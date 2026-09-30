@@ -23,16 +23,16 @@ def data_validation(df):
    missing_columns = expected_columns - columns_found
 
    if len(missing_columns) > 0:  
-       error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
-       return error
+       missing_column_error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
+       return missing_column_error
    
 
 #detects missing value
    for column in df:
         for value in df[column]:
             if pd.isna(value): 
-                error = {"error_type":"missing_value", "column":column, "row": value.index()}
-                return error
+                missing_value_error = {"error_type":"missing_value", "column":column, "row": value.index()}
+                return missing_value_error
 
 
 #detects data type_error
@@ -42,8 +42,8 @@ def data_validation(df):
 
              if isinstance(value, data_types[column]):
                 continue
-             error = {"error_type": "data_type", "column": column, "row": index, "expected_type": data_types[column], "type_found": type(value)}
-             return error 
+             data_type_error = {"error_type": "data_type", "column": column, "row": index, "expected_type": data_types[column], "type_found": type(value)}
+             return data_type_error
              
    return df 
 
@@ -247,7 +247,7 @@ def visualization(df, warn, anomalies_dic):
     return anomal_points_dic, normal_points_dic, indexes_dic
 
 
-  def report_generation(warn, anomalies_dic): 
+  def report_generation(warn, anomalies_dic, missing_column_error, data_type_error, missing_value_error, integrity_report): 
     """input: stuck_detector_aomalies dic (dictionary of dictionaries) with an anomaly on each dictionary, 
     statistical anomalies dictionary (dictionary of dictionaries) with an anomaly on each dictionary, 
     integrity check result (dictonary) containing the result after checking the identity (hash) of the uploaded file,
@@ -256,22 +256,31 @@ def visualization(df, warn, anomalies_dic):
     statistical_anomalies = []
     with open("report.txt", w, encoding="UTF-8") as file: 
 
+
         if len(warn["anomalies"]) > 0:
             file.write("Stuck Detector Anomaly")
-            file.write(f"There were found {len(warn["anomalies"])} in the file")
+            file.write(f"There were found {len(warn["anomalies"])} stuck detector anomalies in the file")
             for anomaly in warn["anomalies"]:
                 stuck_detector_anomalies.append(anomaly["row"])
-            file.write(f"The statistical anomalies were found on the following rows: {stuck_detector_anomalies}")
+                file.write(f"The stuck detector anomaly was found in the column {anomaly["column"]} withino the following range of rows: {anomaly["start_row"], anomaly["end_row"]} and with the value {anomaly["value"]}")
         
         if len(anomalies_dic["anomalies"]) > 0: 
             file.write("Statistical Anomaly Section")
             file.write(f"There were found {len(anomalies_dic["anomalies"])} in the file")
 
             for anomaly in anomalies_dic["anomalies"]: 
-                stuck_detector_anomalies.append(anomaly["row"])
-            file.write(f"The statistical anomalies were found on the following rows: {statistical_anomalies}")
+                statistical_anomalies.append(anomaly["row"])
+                file.write(f"The statistical anomalies were found on the following rows: {statistical_anomalies}")
         
+        if len(integrity_report) > 0: 
 
+            file.write("Integrity Report Section")
+            file.write(f"This is the status of the integrity analysis: {integrity_report["status"]}")
 
-
+            if integrity_report["status"] == "hash modified": 
+                file.write(f'The hash was modified. The hash has changed from {integrity_report["original_hash"]} to {integrity_report["current_hash"]}')
+            elif integrity_report["status"] == "first execution": 
+                 file.write(f'This is the first time analyizing this file. As consequence, a new hash have been created: {integrity_report[""]}')
+            else: 
+                file.write(f"There weren't found modifications of the file found. The last hash saved was {integrity_report["original_hash"]} and the current hash is {integrity_report["current_hash"]}")
 
