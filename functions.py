@@ -21,6 +21,8 @@ def data_validation(df):
    columns_found = set([column_name.lower() for column_name in df.columns])
    expected_columns = {"pressure", "temperature", "co2", "time"}
    missing_columns = expected_columns - columns_found
+   data_type_errors = {}
+   missing_value_errors = {}
 
    if len(missing_columns) > 0:  
        missing_column_error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
@@ -30,9 +32,10 @@ def data_validation(df):
 #detects missing value
    for column in df:
         for value in df[column]:
-            if pd.isna(value): 
+            if pd.isna(value):
                 missing_value_error = {"error_type":"missing_value", "column":column, "row": value.index()}
-                return missing_value_error
+                missing_value_errors.append(missing_value_error)
+                return missing_value_errors
 
 
 #detects data type_error
@@ -43,7 +46,8 @@ def data_validation(df):
              if isinstance(value, data_types[column]):
                 continue
              data_type_error = {"error_type": "data_type", "column": column, "row": index, "expected_type": data_types[column], "type_found": type(value)}
-             return data_type_error
+             data_type_errors.append(data_type_error)
+             return data_type_errors
              
    return df 
 
@@ -247,7 +251,7 @@ def visualization(df, warn, anomalies_dic):
     return anomal_points_dic, normal_points_dic, indexes_dic
 
 
-  def report_generation(warn, anomalies_dic, missing_column_error, data_type_error, missing_value_error, integrity_report): 
+def report_generation(warn, anomalies_dic, missing_column_error, data_type_error, missing_value_errors, integrity_report): 
     """input: stuck_detector_aomalies dic (dictionary of dictionaries) with an anomaly on each dictionary, 
     statistical anomalies dictionary (dictionary of dictionaries) with an anomaly on each dictionary, 
     integrity check result (dictonary) containing the result after checking the identity (hash) of the uploaded file,
@@ -284,3 +288,11 @@ def visualization(df, warn, anomalies_dic):
             else: 
                 file.write(f"There weren't found modifications of the file found. The last hash saved was {integrity_report["original_hash"]} and the current hash is {integrity_report["current_hash"]}")
 
+        file.write(f"Data Validation Section")
+
+        if len(missing_column_error) > 0: 
+            file.write(f"There are missing the following columns on the dataframe: {missing_column_error["missing_columns"]}")
+
+        if len(missing_value_errors) > 0: 
+            for column, row in zip(missing_value_errors["column"], missing_value_errors["row"]):
+                file.write(f"There is missing a value on column  {column} and row {row}")
