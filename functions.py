@@ -1,31 +1,39 @@
-import pandas as pd
+
 import datetime
 import hashlib
-import numpy as np 
 from collections import Counter
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from pathlib import Path 
+from pathlib import Path
 
-#This function reads the file and transforms it to DataFrame type
-#The module load_file is separeted from the rest of the program to allow modifications in the file extension
-#without compromise the rest of the architecture. 
-#This disattach the module from the rest of the program and makes mantainance easier
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
 def load_csv(file):
     df = pd.read_csv(file)
     return df
 
-data_types = {"temperature": (float, int), "pressure": (float, int), "co2": (float, int), "time": datetime.datetime}
+data_types = {
+    "temperature": (float, int), 
+    "pressure": (float, int), 
+    "co2": (float, int), 
+    "time": datetime.datetime
+    }
 
 def data_validation(df):
-   columns_found = set([column_name.lower() for column_name in df.columns])
+   
+   columns_found = {column_name.lower() for column_name in df.columns}
    expected_columns = {"pressure", "temperature", "co2", "time"}
    missing_columns = expected_columns - columns_found
    data_type_errors = {}
    missing_value_errors = {}
 
    if len(missing_columns) > 0:  
-       missing_column_error = {"error_type": "missing_columns", "missing_columns": list(missing_columns)}
+       missing_column_error = {
+           "error_type": "missing_columns",
+             "missing_columns": list(missing_columns)
+             }
        return missing_column_error
    
 
@@ -33,7 +41,8 @@ def data_validation(df):
    for column in df:
         for value in df[column]:
             if pd.isna(value):
-                missing_value_error = {"error_type":"missing_value", "column":column, "row": value.index()}
+                missing_value_error = {"error_type":"missing_value",
+                                        "column":column, "row": value.index()}
                 missing_value_errors.append(missing_value_error)
                 return missing_value_errors
 
@@ -45,15 +54,19 @@ def data_validation(df):
 
              if isinstance(value, data_types[column]):
                 continue
-             data_type_error = {"error_type": "data_type", "column": column, "row": index, "expected_type": data_types[column], "type_found": type(value)}
+             data_type_error = {
+                 "error_type": 
+                "data_type", 
+                "column": column, 
+                "row": index, 
+                "expected_type": data_types[column], 
+                "type_found": type(value)}
              data_type_errors.append(data_type_error)
              return data_type_errors
              
    return df 
 
-#missing_value
-#data_validation() access every column and the first error is detected in the order of columns. Not chronological. 
-#this fits with the structure of error.
+
 
 def save_hash(hash):
     with open("hash_file.txt", "w") as f: 
@@ -67,7 +80,9 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
             digest = hashlib.file_digest(f, "sha256")
             current_hash = digest.hexdigest()
     else: 
-        integrity_report = {"error_type": "path file not found", "path": file_path}
+        integrity_report = {
+            "error_type": "path file not found", 
+            "path": file_path}
         return integrity_report
     
 
@@ -76,14 +91,23 @@ def integrity_check(file_path, hash_file="hash_file.txt"):
         with open(hash_file) as f:
             original_hash = f.readline()
             if current_hash != original_hash:
-                integrity_report = {"hash_status": "hash_modified", "original_hash": original_hash, "current_hash": current_hash}
+                integrity_report = {
+                    "hash_status": "hash_modified",
+                    "original_hash": original_hash,
+                    "current_hash": current_hash}
                 return integrity_report 
+            
             else: 
-                integrity_report = {"hash_status": "hash_match", "original_hash": original_hash, "current_hash": current_hash}
+                integrity_report = {
+                    "hash_status": "hash_match", 
+                    "original_hash": original_hash, 
+                    "current_hash": current_hash}
                 return integrity_report 
     
     else: 
-        integrity_report = {"hash_status": "first_execution", "current_hash": current_hash}
+        integrity_report = {
+            "hash_status": "first_execution", 
+            "current_hash": current_hash}
         return integrity_report
 
 def pend():
@@ -98,7 +122,10 @@ def constant_signal_detection(df):
     for column in columns:
         index = []
         
-        for i, (current_sample, next_sample) in enumerate(zip(df[column], df[column].iloc[1:])):
+        for i, (current_sample, next_sample) in enumerate(
+                    zip(df[column], 
+                    df[column].iloc[1:])
+                    ):
                 
                 if current_sample == next_sample:
                     index.append(i)
@@ -106,9 +133,15 @@ def constant_signal_detection(df):
                     if (i+1) == (len(df[column])-1):
 
                         if len(index) >= 4:
-                            anomaly = {"column": column, "start_row": index[0], "end_row": i+1, "value": df[column].iloc[index[0]]}
+                            anomaly = {
+                                "column": column, 
+                                "start_row": index[0], 
+                                "end_row": i+1, 
+                                "value": df[column].iloc[index[0]]}
                             anomalies.append(anomaly)
-                            warn = {"status": "end_row_anomaly", "anomalies": anomalies}
+                            warn = {"status":
+                                    "end_row_anomaly",
+                                    "anomalies": anomalies}
                             index.clear()
                         else:
                             index.clear()
@@ -118,9 +151,13 @@ def constant_signal_detection(df):
                     index.append(i)
 
                     if len(index) >= 4: 
-                            anomaly = {"column": column, "start_row": index[0], "end_row": i, "value": df[column].iloc[index[0]]}
+                            anomaly = {"column": column, 
+                                       "start_row": index[0], 
+                                       "end_row": i, 
+                                       "value": df[column].iloc[index[0]]}
                             anomalies.append(anomaly)
-                            warn = {"status": "counter_stuck", "anomalies": anomalies}
+                            warn = {"status": "counter_stuck", 
+                                    "anomalies": anomalies}
                             index.clear()
 
                     else:
@@ -146,7 +183,9 @@ def anomaly_detection(df, sigma):
               anomalies.append(anomaly)
               
     if len(anomalies) > 0:
-        anomalies_dic = {"status":"anomalies_detected", "anomalies": anomalies}
+        anomalies_dic = {
+            "status":"anomalies_detected", 
+            "anomalies": anomalies}
     
     return anomalies_dic
 
@@ -155,8 +194,7 @@ def visualization(df, warn, anomalies_dic):
     categories = []
     elements  = []
     sizes = []
-    anomal_points = []
-    std = []
+    
 
     indexes_dic = {"temperature": [], "pressure": [], "co2": []}
     anomal_points_dic = {"temperature": [], "pressure": [], "co2": []}
@@ -183,22 +221,24 @@ def visualization(df, warn, anomalies_dic):
             sizes.append(c[label])
             label_colors.append(colors[i])
 
-    plt.pie(sizes, labels=categories, colors=colors, autopct="%1.1f%%", shadow=True, startangle=140)
+    plt.pie(
+        sizes, 
+        labels=categories, 
+        colors=colors, 
+        autopct="%1.1f%%", 
+        shadow=True, 
+        startangle=140
+        )
     plt.show()
 
 
     for column in df.columns:
-
-        """this block has the responsability of including all sequential anomalies in 
-            constant_anomaly_dic generated in constant_anomaly function"""
 
         for anomaly in warn["anomalies"]:
             if anomaly["column"] == column: 
                 for index in range(anomaly["start_row"], anomaly["end_row"]):
                     indexes_dic[column].append(index)
 
-        """this block has the responsability of including all individual statistical anomalies
-            found with anomaly_detection function"""
 
         for anomaly in anomalies_dic["anomalies"]: 
             if anomaly["column"] == column: 
@@ -234,16 +274,33 @@ def visualization(df, warn, anomalies_dic):
     for column in df.columns:
 
         
-        indexes_normal_points_dic[column].append(np.zeros_like(normal_points_dic[column]))
-        indexes_anomal_points_dic[column].append(np.ones_like(anomal_points_dic[column]))
+        indexes_normal_points_dic[column].append(
+            np.zeros_like(normal_points_dic[column])
+            )
+        indexes_anomal_points_dic[column].append(
+            np.ones_like(anomal_points_dic[column])
+            )
 
 
     for column in df.columns: 
 
-        plt.scatter(indexes_normal_points_dic[column], normal_points_dic[column], color='blue', marker='o', label='normal points')
-        plt.scatter(indexes_anomal_points_dic[column], anomal_points_dic[column], color='green', marker='o', label='anomal points') 
+        plt.scatter(
+            indexes_normal_points_dic[column], 
+            normal_points_dic[column],
+              color='blue', 
+              marker='o', 
+              label='normal points')
+        plt.scatter(
+            indexes_anomal_points_dic[column],
+              anomal_points_dic[column],
+                color='green', 
+                marker='o', 
+                label='anomal points') 
+        
         print(f'this is a column value: {column}')
-        plt.title(f'1-D scatter plot for normal vs anomal points in {column} variable')
+        plt.title(
+            f'1-D scatter plot for normal vs anomal points in {column} variable'
+            )
         plt.xticks([0,1], ['normal points', 'anomal points'])
         plt.xlabel('Indexes')
         plt.ylabel(f'{column} values')
@@ -251,26 +308,38 @@ def visualization(df, warn, anomalies_dic):
     return anomal_points_dic, normal_points_dic, indexes_dic
 
 
-def report_generation(warn, anomalies_dic, missing_column_error, data_type_error, missing_value_errors, integrity_report): 
-    """input: stuck_detector_aomalies dic (dictionary of dictionaries) with an anomaly on each dictionary, 
-    statistical anomalies dictionary (dictionary of dictionaries) with an anomaly on each dictionary, 
-    integrity check result (dictonary) containing the result after checking the identity (hash) of the uploaded file,
-    data validation result (dictionary) with keys explaining if there are columns or information missing"""
+def report_generation(
+        warn, 
+        anomalies_dic,
+        missing_column_error, 
+        data_type_error, 
+        missing_value_errors, 
+        integrity_report): 
+
     stuck_detector_anomalies = []
     statistical_anomalies = []
-    with open("report.txt", w, encoding="UTF-8") as file: 
+    with open("report.txt", "w", encoding="UTF-8") as file: 
 
 
         if len(warn["anomalies"]) > 0:
             file.write("Stuck Detector Anomaly")
-            file.write(f"There were found {len(warn["anomalies"])} stuck detector anomalies in the file")
+            file.write(
+                f"There were found {len(warn["anomalies"])}\n"
+                  f"stuck detector anomalies in the file")
+            
             for anomaly in warn["anomalies"]:
                 stuck_detector_anomalies.append(anomaly["row"])
-                file.write(f"The stuck detector anomaly was found in the column {anomaly["column"]} withino the following range of rows: {anomaly["start_row"], anomaly["end_row"]} and with the value {anomaly["value"]}")
+                file.write(
+                    f"The stuck detector anomaly was found in the column:\n"
+                    f"{anomaly["column"]} within the following range of rows:\n"
+                    f"{anomaly["start_row"], anomaly["end_row"]},\n"
+                    f"and with the value {anomaly["value"]}")
         
         if len(anomalies_dic["anomalies"]) > 0: 
             file.write("Statistical Anomaly Section")
-            file.write(f"There were found {len(anomalies_dic["anomalies"])} in the file")
+            file.write(
+                f"There were found {len(anomalies_dic["anomalies"])}\n"
+                 f"in the file")
 
             for anomaly in anomalies_dic["anomalies"]: 
                 statistical_anomalies.append(anomaly["row"])
@@ -279,20 +348,35 @@ def report_generation(warn, anomalies_dic, missing_column_error, data_type_error
         if len(integrity_report) > 0: 
 
             file.write("Integrity Report Section")
-            file.write(f"This is the status of the integrity analysis: {integrity_report["status"]}")
+            file.write(f"This is the status of the integrity analysis:\n" 
+                       f"{integrity_report["status"]}")
 
             if integrity_report["status"] == "hash modified": 
-                file.write(f'The hash was modified. The hash has changed from {integrity_report["original_hash"]} to {integrity_report["current_hash"]}')
+                file.write(
+                    f"The hash was modified. The hash has changed from:\n"
+                    f"{integrity_report["original_hash"]}\n"
+                    f"to {integrity_report["current_hash"]}")
             elif integrity_report["status"] == "first execution": 
-                 file.write(f'This is the first time analyizing this file. As consequence, a new hash have been created: {integrity_report[""]}')
+                 file.write(
+                    f"This is the first time analyizing this file.\n"
+                    f"As consequence, a new hash have been created:\n"
+                    f"{integrity_report[""]}"
+                    )
             else: 
-                file.write(f"There weren't found modifications of the file found. The last hash saved was {integrity_report["original_hash"]} and the current hash is {integrity_report["current_hash"]}")
+                file.write(
+                    f"There weren't found modifications of the file found.\n"
+                    f"The last hash saved was {integrity_report["original_hash"]}\n"
+                    f"and the current hash is {integrity_report["current_hash"]}")
 
-        file.write(f"Data Validation Section")
+        file.write("Data Validation Section")
 
         if len(missing_column_error) > 0: 
-            file.write(f"There are missing the following columns on the dataframe: {missing_column_error["missing_columns"]}")
+            file.write(
+                f"There are missing the following columns on the dataframe:\n"
+                f"{missing_column_error["missing_columns"]}")
 
         if len(missing_value_errors) > 0: 
-            for column, row in zip(missing_value_errors["column"], missing_value_errors["row"]):
-                file.write(f"There is missing a value on column  {column} and row {row}")
+            file.writelines(f"There is missing a value on column:\n"
+                    f"{column} and row {row}" for column, row in zip(
+                    missing_value_errors["column"],
+                    missing_value_errors["row"]))

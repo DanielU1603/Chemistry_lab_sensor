@@ -1,9 +1,8 @@
+import pandas as pd
 
-from functions import constant_signal_detection
-from functions import visualization 
-import pandas as pd 
+from functions import visualization
 
-"""dummy_df = pd.DataFrame(columns="temperature", data=[1, 1, 1, 1, 1])
+dummy_df = pd.DataFrame(columns="temperature", data=[1, 1, 1, 1, 1])
 
 dummy_df_two = pd.DataFrame(columns="temperature", data=[1, 1, 1, 1, 1, 2, 2, 2, 2, 2])
 
@@ -22,23 +21,54 @@ class TestClass:
 
     def multiple_anomalies_test(self): 
         check = constant_signal_detection(dummy_df_three)
-        assert len(check["anomalies"]) == 2"""
+        assert len(check["anomalies"]) == 2
 
-# -------------------visualization_function_test
-warn_anomalies = [{"column": "temperature", "start_row": 0, "end_row": 5, "value": 29}, {"column": "temperature", "start_row": 15, "end_row": 20, "value": 202}]
+"""-------------------visualization_function_test"""
+warn_anomalies = [
+    {"column": "temperature", "start_row": 0, "end_row": 5, "value": 29},
+    {"column": "temperature", "start_row": 15, "end_row": 20, "value": 202},
+]
 warn = {"status": "counter_stuck", "anomalies": warn_anomalies}
-anomalies = [{"column": "temperature", "value": 23, "row":6}, {"column": "temperature", "value": 84, "row": 9}]
+anomalies = [
+    {"column": "temperature", "value": 23, "row": 6},
+    {"column": "temperature", "value": 84, "row": 9},
+]
 anomalies_dic = {"status": "anomalies_detected", "anomalies": anomalies}
-df = pd.DataFrame({"temperature": [29, 29, 29, 29, 29, 2, 23, 2, 5, 84, 2, 24, 2, 2, 2, 202, 202, 202, 202, 202], "pressure": [15, 20, 18, 17, 102, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]})
+df = pd.DataFrame(
+    {
+        "temperature": [
+            29,
+            29,
+            29,
+            29,
+            29,
+            2,
+            23,
+            2,
+            5,
+            84,
+            2,
+            24,
+            2,
+            2,
+            2,
+            202,
+            202,
+            202,
+            202,
+            202,
+        ],
+        "pressure": [15, 20, 18, 17, 102, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    }
+)
 
 visualization(df, warn, anomalies_dic)
 
-def anomalies_test(self):
-    anomal_points_dic, _, _ = visualization(df, warn, anomalies_dic)
-    anomal_points = []
-    for column in df.columns:
-        anomal_points.append(anomal_points_dic[column])
-    assert anomal_points == [anomaly for anomaly in anomalies["value"]]
 
-#def stuck_detector_anomaly(self):
-    
+def anomalies_test(self):
+    """anomal_points_dic correspond to all anomal points into the dataframe (both statistical anomaly and stuck detector)"""
+    anomal_points_dic, _, _ = visualization(df, warn, anomalies_dic)
+    anomal_points = [
+        value for column in df.columns for value in anomal_points_dic[column]
+    ]
+    assert anomal_points == [anomaly for anomaly in anomalies["value"]]
